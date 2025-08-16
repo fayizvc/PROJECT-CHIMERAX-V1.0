@@ -4,6 +4,7 @@ import { Workout, TimerState, Exercise } from '../types';
 import { WORK_DURATION, REST_DURATION, TOTAL_ROUNDS } from '../constants';
 import CircularTimer from './CircularTimer';
 import { PlayIcon, PauseIcon, StopIcon } from './icons';
+import { playAlertSound } from '../utils/audio';
 
 type DetailTab = 'execution' | 'fallback' | 'overdrive';
 
@@ -51,6 +52,7 @@ const WorkoutScreen: React.FC<WorkoutScreenProps> = ({ workout, onComplete }) =>
     if (isPaused) return;
 
     if (timeLeft <= 0) {
+      playAlertSound();
       advanceWorkout();
       return;
     }

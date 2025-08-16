@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { PRE_WORKOUT_ROUTINE } from '../constants';
 import CircularTimer from './CircularTimer';
+import { playAlertSound } from '../utils/audio';
 
 interface PreWorkoutScreenProps {
   onComplete: () => void;
@@ -15,6 +16,7 @@ const PreWorkoutScreen: React.FC<PreWorkoutScreenProps> = ({ onComplete }) => {
 
   useEffect(() => {
     if (timeLeft <= 0) {
+      playAlertSound();
       const nextIndex = currentExerciseIndex + 1;
       if (nextIndex < PRE_WORKOUT_ROUTINE.length) {
         setCurrentExerciseIndex(nextIndex);
