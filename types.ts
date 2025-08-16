@@ -1,6 +1,7 @@
 
 export enum AppScreen {
   SELECTION = 'SELECTION',
+  PRE_WORKOUT = 'PRE_WORKOUT',
   WORKOUT = 'WORKOUT',
   COMPLETE = 'COMPLETE',
 }
@@ -22,6 +23,12 @@ export interface Exercise {
   execution: string;
   fallback: string;
   overdrive: string;
+}
+
+export interface PreWorkoutExercise {
+  name: string;
+  duration: number;
+  description: string;
 }
 
 export interface Workout {

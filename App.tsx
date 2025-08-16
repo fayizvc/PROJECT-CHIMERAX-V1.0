@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import WorkoutSelectionScreen from './components/WorkoutSelectionScreen';
 import WorkoutScreen from './components/WorkoutScreen';
 import CompletionScreen from './components/CompletionScreen';
+import PreWorkoutScreen from './components/PreWorkoutScreen';
 import { AppScreen, Workout } from './types';
 
 const App: React.FC = () => {
@@ -11,6 +12,10 @@ const App: React.FC = () => {
 
   const handleSelectWorkout = (workout: Workout) => {
     setSelectedWorkout(workout);
+    setAppScreen(AppScreen.PRE_WORKOUT);
+  };
+
+  const handlePreWorkoutComplete = () => {
     setAppScreen(AppScreen.WORKOUT);
   };
 
@@ -25,6 +30,8 @@ const App: React.FC = () => {
 
   const renderScreen = () => {
     switch (appScreen) {
+      case AppScreen.PRE_WORKOUT:
+        return <PreWorkoutScreen onComplete={handlePreWorkoutComplete} />;
       case AppScreen.WORKOUT:
         return selectedWorkout ? (
           <WorkoutScreen workout={selectedWorkout} onComplete={handleWorkoutComplete} />

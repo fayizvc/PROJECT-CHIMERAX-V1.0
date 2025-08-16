@@ -1,9 +1,17 @@
 
-import { Workout, WorkoutType } from './types';
+import { Workout, WorkoutType, PreWorkoutExercise } from './types';
 
 export const WORK_DURATION = 40;
 export const REST_DURATION = 20;
 export const TOTAL_ROUNDS = 3;
+
+export const PRE_WORKOUT_ROUTINE: PreWorkoutExercise[] = [
+  { name: 'Jumping Jacks', duration: 30, description: 'A classic full-body warm-up to get your heart rate up.' },
+  { name: 'Arm Circles', duration: 20, description: 'Loosen up your shoulder joints. Go forwards for 10s, then backwards.' },
+  { name: 'High Knees', duration: 30, description: 'Drive your knees up towards your chest. Keep a brisk pace.' },
+  { name: 'Leg Swings', duration: 30, description: 'Hold onto something for balance. Swing one leg forward and back for 15s, then switch.' },
+  { name: 'Torso Twists', duration: 20, description: 'Stand with feet shoulder-width apart and rotate your upper body side to side.' }
+];
 
 export const WORKOUT_DATA: Workout[] = [
   {
