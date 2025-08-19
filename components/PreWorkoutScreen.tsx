@@ -1,8 +1,8 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { PRE_WORKOUT_ROUTINE } from '../constants';
 import CircularTimer from './CircularTimer';
 import { playAlertSound } from '../utils/audio';
+import { PauseIcon, PlayIcon, SkipNextIcon, StopIcon } from './icons';
 
 interface PreWorkoutScreenProps {
   onComplete: () => void;
@@ -11,19 +11,26 @@ interface PreWorkoutScreenProps {
 const PreWorkoutScreen: React.FC<PreWorkoutScreenProps> = ({ onComplete }) => {
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
   const [timeLeft, setTimeLeft] = useState(PRE_WORKOUT_ROUTINE[0].duration);
+  const [isPaused, setIsPaused] = useState(false);
 
   const currentExercise = PRE_WORKOUT_ROUTINE[currentExerciseIndex];
 
+  const advanceExercise = useCallback(() => {
+    const nextIndex = currentExerciseIndex + 1;
+    if (nextIndex < PRE_WORKOUT_ROUTINE.length) {
+      setCurrentExerciseIndex(nextIndex);
+      setTimeLeft(PRE_WORKOUT_ROUTINE[nextIndex].duration);
+    } else {
+      onComplete();
+    }
+  }, [currentExerciseIndex, onComplete]);
+
   useEffect(() => {
+    if (isPaused) return;
+
     if (timeLeft <= 0) {
       playAlertSound();
-      const nextIndex = currentExerciseIndex + 1;
-      if (nextIndex < PRE_WORKOUT_ROUTINE.length) {
-        setCurrentExerciseIndex(nextIndex);
-        setTimeLeft(PRE_WORKOUT_ROUTINE[nextIndex].duration);
-      } else {
-        onComplete();
-      }
+      advanceExercise();
       return;
     }
 
@@ -32,11 +39,18 @@ const PreWorkoutScreen: React.FC<PreWorkoutScreenProps> = ({ onComplete }) => {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [timeLeft, currentExerciseIndex, onComplete]);
+  }, [timeLeft, isPaused, advanceExercise]);
 
   const getTimerPercentage = () => {
     const duration = currentExercise.duration;
     return (timeLeft / duration) * 100;
+  };
+  
+  const togglePause = () => setIsPaused(prev => !prev);
+  
+  const skipCurrentExercise = () => {
+    playAlertSound();
+    advanceExercise();
   };
 
   return (
@@ -72,12 +86,27 @@ const PreWorkoutScreen: React.FC<PreWorkoutScreenProps> = ({ onComplete }) => {
             </p>
         </div>
         
-        <button
-          onClick={onComplete}
-          className="mt-10 bg-gray-700 text-amber-400 font-bold py-3 px-8 rounded-lg uppercase tracking-wider hover:bg-amber-500 hover:text-gray-900 transition-colors duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-amber-500 focus:ring-opacity-50"
-        >
-          Skip Protocol
-        </button>
+        <div className="flex items-center space-x-6 mt-8">
+           <button 
+            onClick={skipCurrentExercise}
+            aria-label="Skip Exercise"
+            className="flex items-center justify-center w-12 h-12 bg-gray-700 text-amber-400 rounded-full shadow-lg transform hover:scale-110 hover:bg-amber-500 hover:text-white transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-amber-500 focus:ring-opacity-50">
+            <SkipNextIcon className="w-6 h-6"/>
+          </button>
+          <button 
+            onClick={togglePause} 
+            aria-label={isPaused ? 'Resume' : 'Pause'}
+            className="flex items-center justify-center w-16 h-16 bg-amber-500 text-gray-900 rounded-full shadow-lg transform hover:scale-110 transition-transform duration-200 focus:outline-none focus:ring-4 focus:ring-amber-500 focus:ring-opacity-50">
+            {isPaused ? <PlayIcon className="w-8 h-8"/> : <PauseIcon className="w-8 h-8"/>}
+          </button>
+           <button 
+            onClick={onComplete}
+            aria-label="Skip Warmup"
+            className="flex items-center justify-center w-12 h-12 bg-gray-700 text-red-400 rounded-full shadow-lg transform hover:scale-110 hover:bg-red-500 hover:text-white transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-red-500 focus:ring-opacity-50">
+            <StopIcon className="w-6 h-6"/>
+          </button>
+        </div>
+
       </div>
     </div>
   );
