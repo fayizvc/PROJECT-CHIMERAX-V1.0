@@ -7,9 +7,15 @@ export enum AppScreen {
 }
 
 export enum WorkoutType {
+  // V1
   UPPER_SIEGE = 'UPPER SIEGE',
   PROPULSION = 'PROPULSION',
   THE_CRUCIBLE = 'THE CRUCIBLE',
+  // V2
+  MONDAY_PUSH = 'MONDAY: UPPER BODY (PUSH)',
+  TUESDAY_LEGS_CORE = 'TUESDAY: LOWER BODY & CORE',
+  THURSDAY_PULL = 'THURSDAY: UPPER BODY (PULL)',
+  FRIDAY_FULL_BODY = 'FRIDAY: FULL BODY',
 }
 
 export enum TimerState {
@@ -31,7 +37,13 @@ export interface PreWorkoutExercise {
   description: string;
 }
 
+export interface CoolDownStretch {
+    name: string;
+    description: string;
+}
+
 export interface Workout {
   name: WorkoutType;
   exercises: Exercise[];
+  version: 'v1' | 'v2';
 }

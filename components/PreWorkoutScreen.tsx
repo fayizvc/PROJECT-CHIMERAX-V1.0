@@ -1,29 +1,31 @@
+
 import React, { useState, useEffect, useCallback } from 'react';
-import { PRE_WORKOUT_ROUTINE } from '../constants';
 import CircularTimer from './CircularTimer';
 import { playAlertSound } from '../utils/audio';
 import { PauseIcon, PlayIcon, SkipNextIcon, StopIcon } from './icons';
+import { PreWorkoutExercise } from '../types';
 
 interface PreWorkoutScreenProps {
   onComplete: () => void;
+  routine: PreWorkoutExercise[];
 }
 
-const PreWorkoutScreen: React.FC<PreWorkoutScreenProps> = ({ onComplete }) => {
+const PreWorkoutScreen: React.FC<PreWorkoutScreenProps> = ({ onComplete, routine }) => {
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(PRE_WORKOUT_ROUTINE[0].duration);
+  const [timeLeft, setTimeLeft] = useState(routine[0].duration);
   const [isPaused, setIsPaused] = useState(false);
 
-  const currentExercise = PRE_WORKOUT_ROUTINE[currentExerciseIndex];
+  const currentExercise = routine[currentExerciseIndex];
 
   const advanceExercise = useCallback(() => {
     const nextIndex = currentExerciseIndex + 1;
-    if (nextIndex < PRE_WORKOUT_ROUTINE.length) {
+    if (nextIndex < routine.length) {
       setCurrentExerciseIndex(nextIndex);
-      setTimeLeft(PRE_WORKOUT_ROUTINE[nextIndex].duration);
+      setTimeLeft(routine[nextIndex].duration);
     } else {
       onComplete();
     }
-  }, [currentExerciseIndex, onComplete]);
+  }, [currentExerciseIndex, onComplete, routine]);
 
   useEffect(() => {
     if (isPaused) return;
@@ -66,7 +68,7 @@ const PreWorkoutScreen: React.FC<PreWorkoutScreenProps> = ({ onComplete }) => {
         <div className="mb-6 text-center">
             <h1 className="text-xl font-bold text-amber-400 tracking-widest uppercase">PRE-MISSION PROTOCOL</h1>
             <p className="text-gray-400 font-semibold tracking-widest uppercase mt-2">
-                STEP {currentExerciseIndex + 1} / {PRE_WORKOUT_ROUTINE.length}
+                STEP {currentExerciseIndex + 1} / {routine.length}
             </p>
             <h2 className="text-3xl sm:text-4xl font-bold text-white mt-4 truncate">
                 {currentExercise.name}
